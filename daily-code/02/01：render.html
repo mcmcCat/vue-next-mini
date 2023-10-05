@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.37/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+  <script>
+    // const { render, h } = Vue
+    // const vnode = h(
+    //   'div',
+    //   {
+    //     class: 'test'
+    //   },
+    //   'hello render'
+    // )
+    // const container = document.querySelector('#app')
+    // render(vnode, container)
+
+    const vnode = {
+      type: 'div',
+      props: {
+        class: 'test'
+      },
+      children: 'hello render'
+    }
+    function render(vnode) {
+      const ele = document.createElement(vnode.type)
+      ele.className = vnode.props.class
+      ele.innerText = vnode.children
+      document.body.appendChild(ele)
+    }
+    render(vnode)
+  </script>
+</html>
