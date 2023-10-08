@@ -1,3 +1,4 @@
+import { isObject } from '@vue/shared'
 import {mutableHandlers} from './baseHandlers'
 
 // 为什么要用 WeakMap 呢？我们去看下面的 proxyMap
@@ -19,4 +20,8 @@ function createReactiveObject(target: object,baseHandlers: ProxyHandler<any>,pro
   proxyMap.set(target,proxy)
   
   return proxy
+}
+
+export const toReactive = <T extends unknown>(value :T): T => {
+  return isObject(value) ? reactive(value as object) : value
 }
