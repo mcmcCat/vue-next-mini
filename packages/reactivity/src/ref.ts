@@ -38,7 +38,7 @@ class RefImpl<T> {
     if(hasChanged(newVal,this._rawValue)){
       this._rawValue = newVal
       this._value = toReactive(newVal)
-      triggerRefVal(this)
+      triggerRefValue(this)
     }
   }
 }
@@ -49,7 +49,7 @@ export function trackRefValue(ref:any) {
   }
 }
 
-export function triggerRefVal(ref: any) {
+export function triggerRefValue(ref: any) {
   if(ref.dep){
     triggerEffects(ref.dep)
   }

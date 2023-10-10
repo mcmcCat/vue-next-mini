@@ -1,6 +1,9 @@
+import { ComputedRefImpl } from "./computed"
 import { Dep,createDep } from "./dep"
 
 type KeyToDepMap = Map<any, Dep>
+export type EffectScheduler = (...args:any[]) => any
+
 const targetMap = new WeakMap<any,KeyToDepMap>
 
 export function effect<T = any>(fn: () => T) {
@@ -12,7 +15,8 @@ export function effect<T = any>(fn: () => T) {
 export let activeEffect: ReactiveEffect | undefined
 
 export class ReactiveEffect<T =any> {
-    constructor(public fn: ()=> T) {}
+    computed?: ComputedRefImpl<T>
+    constructor(public fn: ()=> T, public scheduler: EffectScheduler | null = null) {}
 
     run() {
       activeEffect = this
@@ -57,11 +61,28 @@ export function triggerEffects(dep: Dep) {
   const effects = Array.isArray(dep) ? dep : [...dep]
 
   // 依次触发依赖
+  // for (const effect of effects) {
+  //   triggerEffect(effect)
+  // }
+
+  // 不在依次触发，而是先触发所有计算属性依赖，在触发所有非计算属性依赖
   for (const effect of effects) {
-    triggerEffect(effect)
+    if(effect.computed){
+      triggerEffect(effect)
+    }
+  }
+
+  for (const effect of effects) {
+    if(!effect.computed){
+      triggerEffect(effect)
+    }
   }
 }
 // 触发指定依赖
 export function triggerEffect(effect: ReactiveEffect) {
-  effect.run()
+  if(effect.scheduler){
+    effect.scheduler()
+  }else {
+    effect.run()
+  }
 }
